@@ -19,7 +19,7 @@ COLOR_RESET = "\u001b[0;0;0m"
 
 
 def __get_color_code(color: str) -> int:
-    """Translates a color in string like 'bright red' to a integer of 
+    """Translates a color in string like 'bright red' to a integer of
     this table: https://i.stack.imgur.com/9UVnC.png
     """
     code = 0
