@@ -3,3 +3,6 @@ __pyache__/
 
 # IDE
 .vscode
+
+# Program specific
+*.log
