@@ -1,8 +1,11 @@
 # Python
-__pyache__/
+__pycache__/
 
 # IDE
 .vscode
 
 # Program specific
 *.log
+
+# Linter
+.flake8
