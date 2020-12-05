@@ -8,6 +8,7 @@ class Console:
         self._log = []
         self.log_display_length = 15
         self.log_file_name = log_file_name
+        self.pin = ""
 
         if not self.log_file_name.endswith('.log'):
             self.log_file_name += ".log"
@@ -23,8 +24,17 @@ class Console:
     def __get_time_stamp(self):
         return f"[{dt.now().strftime('%Y-%m-%d %H:%M:%S')}]"
 
+    def __get_pin(self):
+        if type(self.pin) == str:
+            return self.pin
+        else:
+            return self.pin()
+
     def __output(self):
         self.clear_screen()
+
+        # pinned data
+        print(self.__get_pin())
 
         # log
         print("> === [ LOG ] ===")
