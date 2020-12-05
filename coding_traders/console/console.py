@@ -1,10 +1,16 @@
 import os
 import platform
 from datetime import datetime as dt
+import pyfiglet
+from color import color, COLOR_RESET
 
 
 class Console:
-    def __init__(self, log_file_name):
+    def __init__(self, app_name, log_file_name):
+        logo_font = 'larry3d'
+        custom_fig = pyfiglet.Figlet(font=logo_font, width=1000)
+        self.logo = custom_fig.renderText(app_name)[:-1]  # [:-1] to remove trailing enter
+
         self._log = []
         self.log_display_length = 15
         self.log_file_name = log_file_name
@@ -33,6 +39,9 @@ class Console:
     def __output(self):
         self.clear_screen()
 
+        # logo
+        print(f"{color(fg='red')}{self.logo}{COLOR_RESET}", end="")
+
         # pinned data
         print(self.__get_pin())
 
@@ -49,5 +58,5 @@ class Console:
 
 
 if __name__ == "__main__":
-    console = Console('test_log')
+    console = Console('Coding Traders', 'test_log')
     console.log("test")
