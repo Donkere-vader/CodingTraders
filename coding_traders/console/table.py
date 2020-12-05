@@ -61,9 +61,11 @@ class Table:
             entry_line = ""
             for column in self.table_columns:
                 if type(e[column]) == int or type(e[column]) == float:
-                    entry_line += self.__convert_value(e[column]).rjust(column_widths[column]) + " "
+                    entry_line += self.__convert_value(
+                        e[column]).rjust(column_widths[column]) + " "
                 else:
-                    entry_line += self.__convert_value(e[column]).ljust(column_widths[column]) + " "
+                    entry_line += self.__convert_value(
+                        e[column]).ljust(column_widths[column]) + " "
             lines.append(entry_line)
 
         for _ in range(self.minimum_rows - (idx + 1)):
@@ -80,6 +82,7 @@ class Table:
         lines[1] = f"[ {self.title} ] ".ljust(max_line_length, "-")
 
         return "\n".join(lines)
+
 
 if __name__ == "__main__":
     # little example
