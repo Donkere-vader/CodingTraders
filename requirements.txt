@@ -1,1 +1,6 @@
 pyfiglet
+pandas_datareader
+datetime
+numpy
+matplotlib.pyplot
+scipy.signal

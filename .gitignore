@@ -9,3 +9,4 @@ __pycache__/
 
 # Linter
 .flake8
+.DS_Store
