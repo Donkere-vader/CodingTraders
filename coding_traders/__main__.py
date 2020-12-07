@@ -42,10 +42,10 @@ class CodingTraders:
         def find_minimum(i):
             imin = i
 
-            while i < n and all_lows[i]/all_lows[imin] < r:
+            while i < n and all_lows[i] / all_lows[imin] < r:
                 if all_lows[i] < all_lows[imin]:
                     imin = i
-                i = i+1
+                i = i + 1
             if i < n and all_lows[imin] < all_lows[i]:
                 print(all_lows[imin])
                 print(imin)
@@ -56,7 +56,7 @@ class CodingTraders:
         def find_maximum(i):
             imax = i
 
-            while i < (n-1) and all_highs[imax]/all_highs[i] < r:
+            while i < (n - 1) and all_highs[imax] / all_highs[i] < r:
                 if all_highs[i] > all_highs[imax]:
                     imax = i
                 i = i + 1
@@ -79,7 +79,7 @@ class CodingTraders:
 
         print(min_and_max_values)
 
-        for i in range(len(min_and_max_values)-3):
+        for i in range(len(min_and_max_values) - 3):
             if min_and_max_values[i] > min_and_max_values[i + 2] and min_and_max_values[i + 1] < \
                     min_and_max_values[i + 3]:
                 print("----------------------------")
