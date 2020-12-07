@@ -5,46 +5,141 @@ import matplotlib.pyplot as plt
 from scipy.signal import argrelmin, argrelmax
 
 
-# Imports all available stock information on Yahoo! Finance.
-start = datetime.datetime(2019, 12, 4)
-end = datetime.datetime(2020, 12, 4)
+class SignalDetector:
+    def stock_data(self, stock_symbol):
+        start = datetime.datetime(2019, 12, 4)
+        end = datetime.datetime(2020, 12, 4)
+        apple = pdr.get_data_yahoo(stock_symbol, start, end)
+        return apple
 
-apple = pdr.get_data_yahoo('AAPL', start, end)
+    # print(apple.describe())
 
-# print(apple.describe())
+    # print(apple.tail())
 
-# print(apple.tail())
+    def plot_stock(self):
+        prices = self.apple['Close']
+        self.apple['Close'].plot(grid=True)
+
+        plt.show()
+
+    def percentage_change_adj_close(self):
+        daily_close = self.apple[['Adj Close']]
+        daily_pct_change = daily_close.pct_change()
+        daily_pct_change.fillna(0, inplace=True)
+
+        print(daily_pct_change)
+
+        daily_log_returns = np.log(daily_close.pct_change()+1)
+
+        print(daily_log_returns)
+
+    def calculate_volatility(self):
+        # Calculate the volatility of the given stock
+        min_periods = 75
+        volume = self.daily_pct_change.rolling(min_periods).std() * np.sqrt(min_periods)
+
+        volume.plot(figsize=(10, 8))
+
+        plt.show()
 
 
-# Plot the closing prices for `aapl`
-prices = apple['Close']
-apple['Close'].plot(grid=True)
+class CodingTraders:
+    def __init__(self):
+        signaldetector = SignalDetector()
+        stockinformation_apple = signaldetector.stock_data("AAPL")
+        all_highs = stockinformation_apple['High']
+        all_lows = stockinformation_apple['Low']
+        r = 1.05
+        n = len(stockinformation_apple['High'])
+        min_and_max_values = []
+        print(len(all_highs))
+        print(len(all_lows))
+        self.main_program_loop(all_highs, all_lows, r, n, min_and_max_values)
 
-plt.show()
+    def main_program_loop(self, all_highs, all_lows, r, n, min_and_max_values):
+        def find_first():
+            imin = 1
+            imax = 1
+            i = 2
+            while i < n and all_lows[i] / all_lows[imin] < r and all_highs[imax] / all_highs[i] < r:
+                if all_lows[i] < all_lows[imin]:
+                    imin = i
+                if all_highs[i] > all_highs[imax]:
+                    imax = i
+                i = i + 1
+
+            if imin < imax:
+                print(all_lows[imin])
+                print(imin)
+                min_and_max_values.append(all_lows[imin])
+            else:
+                print(all_highs[imax])
+                print(imax)
+                min_and_max_values.append(all_highs[imax])
+
+            return i
+
+        def find_minimum(i):
+            imin = i
+
+            while i < n and all_lows[i]/all_lows[imin] < r:
+                if all_lows[i] < all_lows[imin]:
+                    imin = i
+                i = i+1
+            if i < n and all_lows[imin] < all_lows[i]:
+                print(all_lows[imin])
+                print(imin)
+                min_and_max_values.append(all_lows[imin])
+
+            return i
+
+        def find_maximum(i):
+            imax = i
+
+            while i < (n-1) and all_highs[imax]/all_highs[i] < r:
+                if all_highs[i] > all_highs[imax]:
+                    imax = i
+                i = i + 1
+
+            if i < n and all_highs[imax] > all_highs[i]:
+                print(all_highs[imax])
+                print(imax)
+                min_and_max_values.append(all_highs[imax])
+
+            return i
+
+        i = find_first()
+
+        if i < n and all_highs[i] > all_lows[1]:
+            i = find_maximum(i)
+
+        while i < n:
+            i = find_minimum(i)
+            i = find_maximum(i)
+
+        print(min_and_max_values)
+
+        for i in range(len(min_and_max_values)-3):
+            if min_and_max_values[i] > min_and_max_values[i + 2] and min_and_max_values[i + 1] < \
+                    min_and_max_values[i + 3]:
+                print("----------------------------")
+                print(min_and_max_values[i])
+                print(min_and_max_values[i + 1])
+                print(min_and_max_values[i + 2])
+                print(min_and_max_values[i + 3])
+            elif min_and_max_values[i] < min_and_max_values[i + 2] and min_and_max_values[i + 1] > \
+                    min_and_max_values[i + 3]:
+                print("----------------------------")
+                print(min_and_max_values[i])
+                print(min_and_max_values[i + 1])
+                print(min_and_max_values[i + 2])
+                print(min_and_max_values[i + 3])
 
 
-# Shows daily percentage change in the adjusted close price.
-daily_close = apple[['Adj Close']]
-daily_pct_change = daily_close.pct_change()
-daily_pct_change.fillna(0, inplace=True)
+CodingTraders()
 
-# print(daily_pct_change)
-
-daily_log_returns = np.log(daily_close.pct_change()+1)
-
-# print(daily_log_returns)
-
-
-# Calculate the volatility of the given stock
-min_periods = 75
-volume = daily_pct_change.rolling(min_periods).std() * np.sqrt(min_periods)
-
-volume.plot(figsize=(10, 8))
-
-# plt.show()
-
-# Find important minima and maxima of the high
-N = 1  # number of iterations
+# Different approach to find important minima and maxima of the high
+not_in_use = """N = 1  # number of iterations
 highs = apple['High'].dropna().copy()  # make a series of Highs
 lows = apple['Low'].dropna().copy()  # make a series of Lows
 for i in range(N):
@@ -61,106 +156,5 @@ print("---------------------------------")
 
 print(lows)
 lows.plot(grid=True)
-plt.show()
+plt.show()"""
 
-# Another way to find the most important minima and maxima
-# Find first important minimum or maximum
-R = 1.05
-all_highs = apple['High']
-all_lows = apple['Low']
-n = len(apple['High'])
-min_and_max_values = []
-print(len(all_highs))
-print(len(all_lows))
-
-def find_first():
-    imin = 1
-    imax = 1
-    i = 2
-    while i < n and all_lows[i] / all_lows[imin] < R and all_highs[imax] / all_highs[i] < R:
-        if all_lows[i] < all_lows[imin]:
-            imin = i
-        if all_highs[i] > all_highs[imax]:
-            imax = i
-        i = i+1
-
-    if imin < imax:
-        print(all_lows[imin])
-        print(imin)
-        min_and_max_values.append(all_lows[imin])
-    else:
-        print(all_highs[imax])
-        print(imax)
-        min_and_max_values.append(all_highs[imax])
-
-    return i
-
-
-# FIND-MINIMUM(i)  Find the first important minimum after the ith point.
-
-
-def find_minimum(i):
-    imin = i
-
-    while i < n and all_lows[i]/all_lows[imin] < R:
-        if all_lows[i] < all_lows[imin]:
-            imin = i
-        i = i+1
-    if i < n and all_lows[imin] < all_lows[i]:
-        print(all_lows[imin])
-        print(imin)
-        min_and_max_values.append(all_lows[imin])
-
-    return i
-
-
-# FIND-MAXIMUM(i)  Find the first important maximum after the ith point.
-
-
-def find_maximum(i):
-    imax = i
-
-    while i < (n-1) and all_highs[imax]/all_highs[i] < R:
-        if all_highs[i] > all_highs[imax]:
-            imax = i
-        i = i+1
-
-    if i < n and all_highs[imax] > all_highs[i]:
-        print(all_highs[imax])
-        print(imax)
-        min_and_max_values.append(all_highs[imax])
-
-    return i
-
-
-i = find_first()
-
-
-if i < n and all_highs[i] > all_lows[1]:
-    i = find_maximum(i)
-
-while i < n:
-    i = find_minimum(i)
-    i = find_maximum(i)
-
-print(min_and_max_values)
-
-
-# Trying to find the symmetrical triangle breakout
-for i in range(len(min_and_max_values)-3):
-    if min_and_max_values[i] > min_and_max_values[i+2] and min_and_max_values[i+1] < min_and_max_values[i+3]:
-        print("----------------------------")
-        print(min_and_max_values[i])
-        print(min_and_max_values[i+1])
-        print(min_and_max_values[i+2])
-        print(min_and_max_values[i+3])
-        plt.plot(min_and_max_values)
-        plt.show()
-    elif min_and_max_values[i] < min_and_max_values[i+2] and min_and_max_values[i+1] > min_and_max_values[i+3]:
-        print("----------------------------")
-        print(min_and_max_values[i])
-        print(min_and_max_values[i+1])
-        print(min_and_max_values[i+2])
-        print(min_and_max_values[i+3])
-        plt.plot(min_and_max_values)
-        plt.show()
