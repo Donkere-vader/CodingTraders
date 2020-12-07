@@ -5,7 +5,8 @@ class CodingTraders:
     def __init__(self):
         self.signaldetector = SignalDetector()
 
-        """stockinformation_apple = self.signaldetector.get_stock_data("AAPL")
+    def start(self):
+        stockinformation_apple = self.signaldetector.get_stock_data("AAPL")
         all_highs = stockinformation_apple['High']
         all_lows = stockinformation_apple['Low']
         r = 1.05
@@ -14,7 +15,6 @@ class CodingTraders:
         print(len(all_highs))
         print(len(all_lows))
         self.main_program_loop(all_highs, all_lows, r, n, min_and_max_values)
-        """
 
     def main_program_loop(self, all_highs, all_lows, r, n, min_and_max_values):
         def find_first():
@@ -84,10 +84,10 @@ class CodingTraders:
                     min_and_max_values[i + 3]:
                 print("----------------------------")
                 # prints values i to i + 3 of list min_anx_max_values
-                print("\n".join([min_and_max_values[i + j] for j in range(0, 4)]))
+                print("\n".join([str(min_and_max_values[i + j]) for j in range(0, 4)]))
 
             elif min_and_max_values[i] < min_and_max_values[i + 2] and min_and_max_values[i + 1] > \
                     min_and_max_values[i + 3]:
                 print("----------------------------")
                 # prints values i to i + 3 of list min_anx_max_values
-                print("\n".join([min_and_max_values[i + j] for j in range(0, 4)]))
+                print("\n".join([str(min_and_max_values[i + j]) for j in range(0, 4)]))
