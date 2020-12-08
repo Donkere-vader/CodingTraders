@@ -2,7 +2,7 @@ import os
 import platform
 from datetime import datetime as dt
 import pyfiglet
-from color import color, COLOR_RESET
+from color import Color, COLOR_RESET
 
 
 class Console:
@@ -40,7 +40,7 @@ class Console:
         self.clear_screen()
 
         # logo
-        print(f"{color(fg='red')}{self.logo}{COLOR_RESET}", end="")
+        print(f"{Color(fg='red')}{self.logo}{COLOR_RESET}", end="")
 
         # pinned data
         print(self.__get_pin())

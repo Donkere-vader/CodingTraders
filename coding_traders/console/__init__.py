@@ -1,2 +1,2 @@
-from color import color
-from console import console
+from color import Color
+from console import Console
